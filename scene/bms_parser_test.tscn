@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c12l8o5xp1qti"]
+
+[ext_resource type="Script" path="res://BMSParserTest.gd" id="1_77noo"]
+
+[node name="BMSParserTest" type="Node"]
+script = ExtResource("1_77noo")

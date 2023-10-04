@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://db3h7sa03rtej"]
+
+[ext_resource type="PackedScene" uid="uid://ba74368p7rubp" path="res://scene/play_scean.tscn" id="1_rweap"]
+[ext_resource type="PackedScene" uid="uid://n1fa8nuqbw41" path="res://scene/hud.tscn" id="2_umc5t"]
+
+[node name="MainScene" type="Node"]
+
+[node name="PlayScean" parent="." instance=ExtResource("1_rweap")]
+
+[node name="hud" parent="." instance=ExtResource("2_umc5t")]
