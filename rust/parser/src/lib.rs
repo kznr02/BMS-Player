@@ -1,7 +1,7 @@
 use bms_rs::{
     lex::parse,
-    parse::{header::Header, Bms},
-    parse::{notes::Notes, rng::RngMock},
+    parse::{Bms},
+    parse::{rng::RngMock},
 };
 use encoding_rs::SHIFT_JIS;
 use godot::{
@@ -20,7 +20,7 @@ unsafe impl ExtensionLibrary for ParserExtension {}
 #[class(base=Node)]
 struct BMSParser {
     #[base]
-    parser: Base<Node>,
+    _parser: Base<Node>,
 
     bms: Option<Bms>
 }
@@ -29,7 +29,7 @@ struct BMSParser {
 impl NodeVirtual for BMSParser {
     fn init(node: Base<Node>) -> Self {
         Self {
-            parser: node,
+            _parser: node,
             bms: None
         }
     }
@@ -48,13 +48,34 @@ impl BMSParser {
     }
 
     #[func]
-    fn parse_notes(&mut self) -> godot::builtin::Array<GodotString> {
+    fn get_notes(&mut self) -> godot::builtin::Array<GodotString> {
         let mut godot_bms = builtin::Array::new();
-        let bms = self.bms.take().unwrap();
+        let bms = self.bms.as_ref().unwrap();
         for item in bms.notes.all_notes() {
-            godot_bms.push(GodotString::from(serde_json::to_string(item).unwrap()));
+            godot_bms.push(GodotString::from(serde_json::to_string(&item).unwrap()));
         }
-        godot_print!("Parse success");
         return godot_bms;
+    }
+
+    #[func]
+    fn get_bgm(&mut self) -> godot::builtin::Array<GodotString> {
+        let mut bgms = builtin::Array::new();
+        let bms = self.bms.as_ref().unwrap();
+        for b in bms.notes.bgms() {
+            bgms.push(GodotString::from(serde_json::to_string(&b).unwrap()));
+        }
+
+        return bgms;
+    }
+
+    #[func]
+    fn get_bgm_file(&mut self) -> godot::builtin::Array<GodotString> {
+        let mut paths = builtin::Array::new();
+        let bms = self.bms.as_ref().unwrap();
+        for bf in &bms.header.wav_files {
+            paths.push(GodotString::from(serde_json::to_string(&bf).unwrap()));
+        }
+
+        return paths;
     }
 }

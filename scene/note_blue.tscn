@@ -1,6 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://dfpoype2pbr1j"]
+[gd_scene load_steps=3 format=3 uid="uid://dfpoype2pbr1j"]
 
 [ext_resource type="Texture2D" uid="uid://be165kvlhjfg2" path="res://assets/note-blue.png" id="1_qinm0"]
+[ext_resource type="Script" path="res://scene/note_blue.gd" id="2_jgw72"]
 
 [node name="NoteBlue" type="Sprite2D"]
 texture = ExtResource("1_qinm0")
+script = ExtResource("2_jgw72")
+
+[node name="KeySound" type="AudioStreamPlayer" parent="."]
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
+
+[connection signal="screen_exited" from="VisibleOnScreenEnabler2D" to="." method="_on_visible_on_screen_enabler_2d_screen_exited"]

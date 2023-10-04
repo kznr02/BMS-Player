@@ -12,8 +12,8 @@ dest_files=["res://.godot/imported/pianoleft_1.ogg-1f79162690b3214b86a89355cae05
 
 [params]
 
-loop=false
-loop_offset=0
-bpm=0
-beat_count=0
+loop=true
+loop_offset=0.0
+bpm=133.0
+beat_count=4
 bar_beats=4
