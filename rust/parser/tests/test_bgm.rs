@@ -8,11 +8,11 @@ fn test_notes() {
     let ts = parse(&cow).unwrap();
     let rng = RngMock([1]);
     let bms = Bms::from_token_stream(&ts, rng).unwrap();
-
-    for item in bms.notes.all_notes() {
-        
-        println!("{}", serde_json::to_string(&item).unwrap());
-    }
+    println!("{:?}", bms.header.bpm)
+    // for item in bms.notes.all_notes() {
+    //     println!("{:?}", &item);
+    //     // println!("{}", serde_json::to_string(&item).unwrap());
+    // }
 }
 
 #[test]

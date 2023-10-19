@@ -1,8 +1,10 @@
 extends Node
 
 const key_width = 60.0
+const key_height = 40
 const lane_width = 60.0
-const start_point = 0 + key_width / 2
+const start_point_x = 0 + key_width / 2.0
+const start_point_y = 0 - key_height / 2.0
 const gap = 64.0
 const BPM = 133.0
 
@@ -12,38 +14,28 @@ const BPM = 133.0
 @export var note_bgm: PackedScene
 @export var bar_line: PackedScene
 @export var alive_time = 600.0
+@export var bms_dir_path = "assets/elegante/"
+@export var bms_file_path = "03_another.bme"
+@export var judge_line_y_pos = 0
 
 var bar_length
 var step 
 var bms_parser
-var wav_map = {}
-var wav_map_4 = {}
-var wav_map_16 = {}
-	
-var notes_list
-var wav_file_list
+var mode = 1
 
-func _init():
-	bms_parser = BMSParser.new()
-	
-	bar_length = (60 / BPM * 4) * 1000   # bartime (ms)
-	step = 576 / alive_time	* 10			 # px per ms
-	pass
+var note_list = []
 
-func _ready():
-	bms_parser.parse_bms("assets/elegante/02_hyper.bme")
+func start_play():
+	bms_parser.parse_bms(bms_dir_path + bms_file_path)
+	
+	$BGMSequencer.load_audio(bms_parser.get_bgm_file(), bms_dir_path)
+	$BGMSequencer.make_seq(bms_parser.get_bgm(), BPM)
 	var notes = bms_parser.get_notes()
-	
-	# Get BGM Obj
-	var bgm_files = bms_parser.get_bgm_file()
-	for bf in bgm_files:
-		var file_json = JSON.parse_string(bf)
-		wav_map[file_json[0]] = file_json[1]
-		
+
 	for i in range(0, 65):
 		var line = bar_line.instantiate()
-		line.points = PackedVector2Array([Vector2(0, 576 - i * bar_length * step / 10), \
-						Vector2(512, 576 - i * bar_length * step / 10)])
+		line.points = PackedVector2Array([Vector2(0, 576 - i * bar_length * step), \
+						Vector2(512, 576 - i * bar_length * step)])
 		line.set_bar_id(i)
 		line.default_color = Color.WHITE
 		line.width = 5
@@ -55,83 +47,97 @@ func _ready():
 		var track = note_json["offset"]["track"]
 		var numerator = note_json["offset"]["numerator"]
 		var denominator = note_json["offset"]["denominator"]
-		var y = 576 - (track * bar_length + bar_length / denominator * numerator) * step / 10
+		var y = 576 - (track * bar_length + bar_length / denominator * numerator) * step
 		var key = note_json["key"]
 		var id = note_json["obj"]
 		var note
-		if note_json["kind"] == "Invisible":
-			continue
 		match key:
 			"Key1":
 				note = note_white.instantiate()
-				note.position = Vector2(start_point + gap, y)
+				note.position = Vector2(start_point_x + gap, y)
+				note.set_lane(1)
+				note.add_to_group("key1")
 			"Key2":
 				note = note_blue.instantiate()
-				note.position = Vector2(start_point + gap * 2, y)	
+				note.position = Vector2(start_point_x + gap * 2, y)	
+				note.set_lane(2)
+				note.add_to_group("key2")
 			"Key3":
 				note = note_white.instantiate()
-				note.position = Vector2(start_point + gap * 3, y)	
+				note.position = Vector2(start_point_x + gap * 3, y)	
+				note.set_lane(3)
+				note.add_to_group("key3")
 			"Key4":
 				note = note_blue.instantiate()
-				note.position = Vector2(start_point + gap * 4, y)
+				note.position = Vector2(start_point_x + gap * 4, y)
+				note.set_lane(4)
+				note.add_to_group("key4")
 			"Key5":
 				note = note_white.instantiate()
-				note.position = Vector2(start_point + gap * 5, y)
+				note.position = Vector2(start_point_x + gap * 5, y)
+				note.set_lane(5)
+				note.add_to_group("key5")
 			"Key6":
 				note = note_blue.instantiate()
-				note.position = Vector2(start_point + gap * 6, y)
+				note.position = Vector2(start_point_x + gap * 6, y)
+				note.set_lane(6)
+				note.add_to_group("key6")
 			"Key7":
 				note = note_white.instantiate()
-				note.position = Vector2(start_point + gap * 7, y)
+				note.position = Vector2(start_point_x + gap * 7, y)
+				note.set_lane(7)
+				note.add_to_group("key7")
 			"Scratch":
 				note = note_red.instantiate()
-				note.position = Vector2(start_point, y)
+				note.position = Vector2(start_point_x, y)
+				note.set_lane(0)
+				note.add_to_group("scratch")
 		if note != null:
+			if note_json["kind"] == "Invisible":
+				note.visible = false
 			note.set_obj_id(id)
-			var stream = load("assets/elegante/" + wav_map[id].get_basename() + ".ogg")
-			stream.loop = false
-			note.set_key_sound(stream)
 			var w = note.texture.get_width()
 			var scale = lane_width / w
 			note.scale = Vector2(scale, scale)
-			note.add_to_group("notes")
 			add_child(note)
-	
-	var bgm_objs = bms_parser.get_bgm()
-	for b in bgm_objs:
-		var bgm_json = JSON.parse_string(b)
-		var track = bgm_json[0]["track"]
-		var numerator = bgm_json[0]["numerator"]
-		var denominator = bgm_json[0]["denominator"]
-		var y = 576 - (track * bar_length + bar_length / denominator * numerator) * step / 10
-		for id in bgm_json[1]:
-			var bgm_obj = note_bgm.instantiate()
-			bgm_obj.set_obj_id(id)
-			var stream = load("assets/elegante/" + wav_map[id].get_basename() + ".ogg")
-			stream.loop = false
-			bgm_obj.set_key_sound(stream)
-			bgm_obj.position = Vector2(start_point, y)
-			bgm_obj.add_to_group("bgm_notes")
-			add_child(bgm_obj)
 			
+	note_list.push_back(get_tree().get_nodes_in_group("scratch")) 
+	for i in range(1, 8):
+		note_list.push_back(get_tree().get_nodes_in_group("key{}".format([i], "{}"))) 
+	
+	$BGMSequencer.start_play()
 	print("load success")
-	$Timer.wait_time = 0.01
-	$Timer.start()
-	
-func _on_timer_timeout():
-	get_tree().call_group("bgm_notes", "is_hit", 576.0)
-	get_tree().call_group("bar_line", "is_hit", 576.0)
-	get_tree().call_group("notes", "is_hit", 576.0)
-	get_tree().call_group("bar_line", "move", step)
-	get_tree().call_group("bgm_notes", "move", step)
-	get_tree().call_group("notes", "move", step)
-	
+
+func _init():
+	bms_parser = BMSParser.new()
+	bar_length = (60 / BPM * 4) * 1000   # bartime (ms)
+	step = 576 / alive_time			 # px per ms(*10)
 	pass
-	
-	
+
+func _ready():
+	pass
+
 func _process(delta):
-	if Input.is_action_just_pressed("Z"):
-		pass
-	
-	
-	pass # Replace with function body.
+	for i in note_list:
+		if !i.is_empty():
+			if i.front().position.y > 576:
+				var node = i.pop_front()
+				$BGMSequencer.play_audio(node.get_obj_id())
+				node.remove_from_group(node.get_groups()[0])
+				node.queue_free()
+	get_tree().call_group("bgm_notes", "call_deferred", "move", step * delta * 1000)
+	get_tree().call_group("key1", "call_deferred", "move", step * delta * 1000)
+	get_tree().call_group("key2", "call_deferred", "move", step * delta * 1000)
+	get_tree().call_group("key3", "call_deferred", "move", step * delta * 1000)
+	get_tree().call_group("key4", "call_deferred", "move", step * delta * 1000)
+	get_tree().call_group("key5", "call_deferred", "move", step * delta * 1000)
+	get_tree().call_group("key6", "call_deferred", "move", step * delta * 1000)
+	get_tree().call_group("key7", "call_deferred", "move", step * delta * 1000)
+	get_tree().call_group("scratch", "call_deferred", "move", step * delta * 1000)
+	get_tree().call_group("bar_line", "call_deferred", "move", step * delta * 1000)
+
+func _physics_process(delta):
+	pass
+
+func _input(event):
+	pass

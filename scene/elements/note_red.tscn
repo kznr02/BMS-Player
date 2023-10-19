@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://dlepncklpxg53"]
+
+[ext_resource type="Texture2D" uid="uid://dt5eyxadyjrtu" path="res://output/assets/note-red.png" id="1_3676i"]
+[ext_resource type="Script" path="res://scene/elements/note_red.gd" id="2_djl1r"]
+
+[node name="NoteRed" type="Sprite2D"]
+texture = ExtResource("1_3676i")
+script = ExtResource("2_djl1r")

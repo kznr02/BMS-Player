@@ -1,10 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://db3h7sa03rtej"]
+[gd_scene load_steps=4 format=3 uid="uid://db3h7sa03rtej"]
 
+[ext_resource type="Script" path="res://scene/main_scene.gd" id="1_ruqbq"]
 [ext_resource type="PackedScene" uid="uid://ba74368p7rubp" path="res://scene/play_scean.tscn" id="1_rweap"]
-[ext_resource type="PackedScene" uid="uid://n1fa8nuqbw41" path="res://scene/hud.tscn" id="2_umc5t"]
+[ext_resource type="PackedScene" uid="uid://n1fa8nuqbw41" path="res://scene/hud/hud.tscn" id="2_umc5t"]
 
 [node name="MainScene" type="Node"]
+script = ExtResource("1_ruqbq")
 
 [node name="PlayScean" parent="." instance=ExtResource("1_rweap")]
 
 [node name="hud" parent="." instance=ExtResource("2_umc5t")]
+
+[connection signal="game_start" from="hud" to="PlayScean" method="start_play"]

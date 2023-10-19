@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://7b4wkndibltb"]
+
+[ext_resource type="Texture2D" uid="uid://duvxlr0qlewnl" path="res://output/assets/note-white.png" id="1_5sggm"]
+[ext_resource type="Script" path="res://scene/elements/note_white.gd" id="2_f68gw"]
+
+[node name="NoteWhite" type="Sprite2D"]
+texture = ExtResource("1_5sggm")
+script = ExtResource("2_f68gw")

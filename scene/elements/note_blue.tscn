@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://dfpoype2pbr1j"]
+
+[ext_resource type="Texture2D" uid="uid://be165kvlhjfg2" path="res://output/assets/note-blue.png" id="1_qm87q"]
+[ext_resource type="Script" path="res://scene/elements/note_blue.gd" id="2_6ho6p"]
+
+[node name="NoteBlue" type="Sprite2D"]
+texture = ExtResource("1_qm87q")
+script = ExtResource("2_6ho6p")

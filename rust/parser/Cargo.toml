@@ -15,7 +15,7 @@ godot = { git = "https://github.com/godot-rust/gdext", branch = "master" }
 version = "*"
 
 [dependencies.bms-rs]
-version = "0.4.2"
+version = "0.4.3"
 features = ["serde", "serde_json"]
 
 [dependencies.serde_json]
