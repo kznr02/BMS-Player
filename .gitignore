@@ -18,7 +18,7 @@ rust/parser/target
 rust/parser/Cargo.lock
 rust/elements
 rust/BgmSequencer
-assets/elegante/
-assets/FREEDOM_DiVE/
+assets/elegante
+assets/FREEDOM_DiVE
 output
 android/
